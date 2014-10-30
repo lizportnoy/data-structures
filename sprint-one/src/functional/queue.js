@@ -14,16 +14,18 @@ var makeQueue = function(){
   };
 
   someInstance.dequeue = function(){
-    var firstOut = storage[0];
-    delete storage[0];
-    _.each(storage, function (val, key) {
-      storage[+key-1] = val;
-    });
-    delete storage[count];
     if (count) {
+      var firstOut = storage[0];
+      delete storage[0];
+
+      _.each(storage, function (val, key) {
+        storage[+key-1] = val;
+      });
+
+      delete storage[count];
       count --;
+      return firstOut;
     }
-    return firstOut;
   };
 
   someInstance.size = function(){
