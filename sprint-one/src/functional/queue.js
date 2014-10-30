@@ -1,7 +1,7 @@
 var makeQueue = function(){
   var someInstance = {};
-  var count = 0;
-
+  var firstInQueue = 0;
+  var lastInQueue = 0;
 
   // Use an object with numeric keys to store values
   var storage = {};
@@ -9,27 +9,19 @@ var makeQueue = function(){
   // Implement the methods below
 
   someInstance.enqueue = function(value){
-    storage[count] = value;
-    count += 1;
+    storage[lastInQueue] = value;
+    lastInQueue++;
   };
 
   someInstance.dequeue = function(){
-    if (count) {
-      var firstOut = storage[0];
-      delete storage[0];
-
-      _.each(storage, function (val, key) {
-        storage[+key-1] = val;
-      });
-
-      delete storage[count];
-      count --;
-      return firstOut;
-    }
+    var firstOut = storage[firstInQueue];
+    delete storage[firstInQueue];
+    firstInQueue++;
+    return firstOut;
   };
 
   someInstance.size = function(){
-    return count;
+    return Object.keys(storage).length;
   };
 
   return someInstance;
