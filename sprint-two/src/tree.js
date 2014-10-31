@@ -20,6 +20,12 @@ treeMethods.addChild = function(value){
   this.children.push(child);
   // add value to array in format of object {value: val, children : undefined}
 
+  function recursiveSubroutine(child) {
+
+  }
+
+  recursiveSubroutine(node);
+
 };
 
 treeMethods.contains = function(target){
