@@ -1,82 +1,65 @@
 var Graph = function(){
   this.storage = {};
+  this.first = null;
 };
 
 Graph.prototype.addNode = function(newNode, toNode){
-  var node = this.makeNode(newNode);
-  this.storagep[newNode] = [];
-  // if graph is empty
-  if(!this.head){
-    this.head = node;
-    this.nodeCount++;
+
+  if(Object.keys(this.storage).length === 0){
+    this.storage[newNode] = [];
+    this.first = newNode;
   }
 
-  else if(this.nodeCount === 1) {
-    this.head.edges = [node];
-    this.nodeCount++;
+  else if(Object.keys(this.storage).length === 1) {
+    this.storage[newNode] = [this.first];
+    this.storage[this.first] = [newNode];
   }
 
   else {
-    // find node to pull up right object
-    var to = this.findNode(toNode);
-    // add tonode to edgesArray of newNode
-    to.edges.push(node)
-    console.log(to);
-    this.nodeCount++;
+    this.storage[newNode] = [toNode];
+    this.storage[toNode].push(newNode);
   }
+
 };
 
 Graph.prototype.contains = function(node){
-  return this.findNode(node) ? true : false;
+  if (this.storage[node] === undefined) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
 Graph.prototype.removeNode = function(node){
-  // find node
+  _.each(this.storage[node], function(edgeValue){
+    this.removeEdge(node, edgeValue);
+  });
+  delete this.storage[node];
 };
 
 Graph.prototype.getEdge = function(fromNode, toNode){
-  var from = this.findNode(fromNode);
-  var to = this.findNode(toNode);
-  if (from.edges && from.edges.indexOf(to) !== -1) {
-    return true;
-  } else {
-    return false;
-  }
+  return this.storage[fromNode].indexOf(toNode) !== -1;
 };
 
 Graph.prototype.addEdge = function(fromNode, toNode){
-  var from = this.findNode(fromNode);
-  var to = this.findNode(toNode);
-  from.edges.push(to);
+  this.storage[fromNode].push(toNode);
+  this.storage[toNode].push(fromNode);
 };
 
 Graph.prototype.removeEdge = function(fromNode, toNode){
-};
+  var ind1 = this.storage[fromNode].indexOf(toNode);
+  this.storage[fromNode].splice(ind1, 1);
 
-Graph.prototype.makeNode = function(newNode){
-  var node = {};
-  node.value = newNode;
-  node.edges = null;
-  return node;
-};
+  var ind2 = this.storage[toNode].indexOf(fromNode);
+  this.storage[toNode].splice(ind2, 1);
 
-Graph.prototype.findNode = function(target, currentNode, searched, result){
-  currentNode = currentNode || this.head;
-  searched = searched || [];
-  result = result || false;
-  searched.push(currentNode.value);
-
-  if (currentNode.value === target) {
-    result = currentNode;
-  } else if (currentNode.edges) {
-    _.each(currentNode.edges, function (edgeNodeObj) {
-      if(searched.indexOf(edgeNodeObj.value) === -1) {
-        result = Graph.prototype.findNode(target, edgeNodeObj, searched, result);
-      }
-    });
+  if (this.storage[fromNode].length === 0) {
+    delete this.storage[fromNode];
   }
 
-  return result;
+  if (this.storage[toNode].length === 0) {
+    delete this.storage[toNode];
+  }
 };
 
 /*
