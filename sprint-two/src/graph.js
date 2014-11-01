@@ -1,7 +1,11 @@
 var Graph = function(){
+  this.storage = {};
 };
 
 Graph.prototype.addNode = function(newNode, toNode){
+  // if first node, no toNode
+  this.storage.vertex = newNode;
+  console.log(this.storage)
 };
 
 Graph.prototype.contains = function(node){
