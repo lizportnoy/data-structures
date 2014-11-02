@@ -1,47 +1,57 @@
-var headNode = false;
 
 var makeBinarySearchTree = function(value){
-  var newBinarySearchTree = {};
+  var newBinarySearchTree = Object.create(treeMethods);
   newBinarySearchTree.value = value;
   newBinarySearchTree.left = null;
   newBinarySearchTree.right = null;
 
-  _.extend(newBinarySearchTree, treeMethods);
-
-  if (!headNode) {
-    headNode = newBinarySearchTree;
-  }
   return newBinarySearchTree;
 };
 
-var treeMethods = {
-  insert: function(value, parentNode, node){
-    node = node || makeBinarySearchTree(value);
-    parentNode = parentNode || headNode;
+  var treeMethods = {
+  insert: function(value){
 
-    if (value < parentNode.value) {
-      if (!parentNode.left) {
-        parentNode.left = node;
+    var node = makeBinarySearchTree(value);
+
+    if (value < this.value) {
+      if (!this.left) {
+        this.left = node;
       } else {
-        parentNode = parentNode.left;
-        this.insert(value, parentNode, node);
+        this.left.insert(value);
       }
-    } else if (value > parentNode.value) {
-      if (!parentNode.right) {
-        parentNode.right = node;
+    } else if (value > this.value) {
+      if (!this.right) {
+        this.right = node;
       } else {
-        parentNode = parentNode.right;
-        this.insert(value, parentNode, node);
-        console.log(this.right.left.value);
+        this.right.insert(value);
       }
     }
 
   },
 
-  contains: function(){
+  contains: function(value, result){
+    result = result || false
+    if (value === this.value) {
+      result = true;
+    } else {
+      if (this.left) {
+        result = this.left.contains(value); 
+      }
+      if (this.right) {
+        result = this.right.contains(value);
+      }
+    }
+    return result;
   },
 
-  depthFirstLog: function(){
+  depthFirstLog: function(func){
+    func(this.value);
+    if (this.left) {
+      this.left.depthFirstLog(func);
+    }
+    if (this.right) {
+      this.right.depthFirstLog(func);
+    }
   }
 
 };
